@@ -162,8 +162,29 @@ document.addEventListener("DOMContentLoaded", () => {
    let dx = cellSize; // displacement on x axis 
    let dy = 0;// displacement on y axis 
 
+   function drawScoreBoard(){
+      const scoreBoard = document.getElementById("score-board");
+      scoreBoard.textContent = `Score ${score}`;
+   }
 
-   function startGame(){
+   function gameLoop(){
+      setTimeout(()=>{
+         drawScoreBoard();
+         drawFoodAndSnake();
+      }, 1000);
+   }
+
+   function drawFoodAndSnake(){
+      gameArena.innerHTML = '';// If previously something is drawn remove it 
+   }
+
+   function runGame(){
+      gameStarted =true;
+      gameLoop();
+   }
+
+
+   function initiateGame(){
       const scoreBoard = document.createElement('div');
       scoreBoard.id = 'score-board';
       document.body.insertBefore(scoreBoard, gameArena);
@@ -172,9 +193,14 @@ document.addEventListener("DOMContentLoaded", () => {
       startButton.textContent = 'Start Game';
       startButton.classList.add('start-button');
       document.body.appendChild(startButton);
+
+      startButton.addEventListener("click" , () => {
+            startButton.style.display = 'none';
+            runGame();
+      });
    }
    
-   startGame();
+   initiateGame();//  This is the 1st function to be executed so that we prepare the UI
 
 });
 

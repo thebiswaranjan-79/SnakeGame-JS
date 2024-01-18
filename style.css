@@ -51,6 +51,6 @@ body{
 .score-board {
     font-size: x-large;
     color:black;
-    font-weight: bold;
+    font-weight: bolder;
     margin: 10px;
 }
