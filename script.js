@@ -166,9 +166,35 @@ document.addEventListener("DOMContentLoaded", () => {
       const scoreBoard = document.getElementById("score-board");
       scoreBoard.textContent = `Score ${score}`;
    }
+   function moveFood(){
+      let newX, newY;
+      do{
+         newX = Math.floor(Math.random() * ((arenaSize-cellSize)/ cellSize) * cellSize);
+         newY = Math.floor(Math.random() * ((arenaSize-cellSize)/ cellSize) * cellSize)
 
+      }while(snake.some(snakeCell => snakeCell.x === newX && snakeCell.y === newY));
+
+      food = {x : newX, y: newY};
+   }
+   function updateSnake(){
+      // Just calculate the new coordinates the snake head will go to 
+      const newHead = {x : snake[0].x + dx , y : snake[0].y + dy};
+      snake.unshift(newHead); // Add the New Head in te front 
+
+      // Colision Case 
+      if(newHead.x === food.x && newHead.y === food.y){
+         // then Collistion happen 
+         score +=5;
+         // don't pop the tail 
+         moveFood();
+         // Move the food 
+      }else{
+          snake.pop(); // Remove the Last Cell     
+      }
+   }
    function gameLoop(){
-      setTimeout(()=>{
+      setInterval(()=>{
+         updateSnake();
          drawScoreBoard();
          drawFoodAndSnake();
       }, 1000);
