@@ -174,8 +174,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 1000);
    }
 
+   function drawDiv(x,y,className){
+      const div = document.createElement('div');
+      div.classList.add(className);
+      div.style.top = `${y}px`;
+      div.style.left = `${x}px`;
+      return div;
+   }
    function drawFoodAndSnake(){
       gameArena.innerHTML = '';// If previously something is drawn remove it 
+      //wipe out everything and redraw with new coordinates when snake moves
+
+      const foodElement = drawDiv(food.x, food.y, 'food');
+      gameArena.appendChild(foodElement);
    }
 
    function runGame(){
