@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
    let snake = [{x: 160, y : 200}, {x: 140, y : 200},{x: 120, y : 200} ];
    let dx = cellSize; // displacement on x axis 
    let dy = 0;// displacement on y axis 
-
+   let gameSpeed = 500;
+   let intervalID;
    function drawScoreBoard(){
       const scoreBoard = document.getElementById("score-board");
       scoreBoard.textContent = `Score ${score}`;
@@ -18,8 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
    function moveFood(){
       let newX, newY;
       do{
-         newX = Math.floor(Math.random() * ((arenaSize-cellSize)/ cellSize) * cellSize);
-         newY = Math.floor(Math.random() * ((arenaSize-cellSize)/ cellSize) * cellSize)
+         newX = Math.floor(Math.random() * ((arenaSize-cellSize)/ cellSize) )* cellSize;
+         newY = Math.floor(Math.random() * ((arenaSize-cellSize)/ cellSize) )* cellSize;
 
       }while(snake.some(snakeCell => snakeCell.x === newX && snakeCell.y === newY));
 
@@ -34,6 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if(newHead.x === food.x && newHead.y === food.y){
          // then Collistion happen 
          score +=5;
+         if(gameSpeed > 30){
+            clearInterval(intervalID);
+            gameLoop();
+            gameSpeed -= 30;
+            
+         }
          // don't pop the tail 
          moveFood();
          // Move the food 
@@ -62,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return isHittingDownWall || isHittingTopWall || isHittingLeftWall || isHittingRightWall; // Game is Over 
    }
    function gameLoop(){
-      setInterval(()=>{
+      intervalID = setInterval(()=>{
          if(!gameStarted) return; // to restart the Game 
          // check for Game Over 
          if(isGameOver()){
@@ -74,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
          updateSnake();
          drawScoreBoard();
          drawFoodAndSnake();
-      }, 500);
+      }, gameSpeed);
    }
 
    function drawDiv(x,y,className){
@@ -99,9 +106,48 @@ document.addEventListener("DOMContentLoaded", () => {
       
    }
 
+   function changeDirection(e){
+         const LEFT_KEY = 37;
+         const RIGHT_KEY = 39;
+         const UP_KEY = 38;
+         const DOWN_KEY = 40;
+         const keyPressed = e.keyCode;
+
+         // If the snake goes down it shouldn't move up directly , it can move left or right then up 
+         //same case in left and right also 
+
+         const isGoingUp = dy == -cellSize;
+         const isGoingDown = dy == cellSize;
+         const isGoingLeft = dx == -cellSize;
+         const isGoingRight = dx == cellSize;
+
+         if(keyPressed == LEFT_KEY && !isGoingRight){
+            dy = 0 ;
+            dx = -cellSize
+         }
+
+         if(keyPressed == RIGHT_KEY && !isGoingLeft){
+            dy = 0;
+            dx = cellSize;
+         }
+
+         if(keyPressed == UP_KEY && !isGoingDown){
+            dy = -cellSize;
+            dx  = 0;
+         }
+
+         if(keyPressed == DOWN_KEY && !isGoingUp){
+            dy = cellSize;
+            dx = 0;
+         }
+   }
    function runGame(){
+     if(!gameStarted){
       gameStarted =true;
+     }
       gameLoop();
+
+      document.addEventListener('keydown', changeDirection);
    }
 
 
@@ -128,3 +174,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // from 35 Minute 
 // If we are move in +ve direction then the displacement is +20 and -ve directoin in x axis will be -20 
 // when you are vertically moving dx should be 0 and when you are horizontally movin dy will be 0
+
+
+
+// UpKey => dx = 0 && dy = -20 
+// downkey => dx = 0 && dy = +20
+// leftkey => dx = -20 && dy = 0
+// rightkey => dx = +20 && dy = 0
